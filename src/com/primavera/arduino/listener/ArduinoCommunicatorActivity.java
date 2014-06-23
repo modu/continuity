@@ -198,16 +198,23 @@ public class ArduinoCommunicatorActivity extends ListActivity {
             if (DEBUG) Log.i(TAG, "data: " + newTransferedData.length + " \"" + new String(newTransferedData) + "\"");
 
             ByteArray transferedData = mTransferedDataList.get(mTransferedDataList.size() - 1);
-            if(newTransferedData.toString() == "0" )
+            //byte[] transferedData = mTransferedDataList.get(mTransferedDataList.size() - 1);
+           
+            int result = Integer.parseInt(byteArrayToString(newTransferedData));
+            
+            if( result == 0 )
             {
             	Log.d(TAG, "Zero is received");
-            	t("Zero is received" + newTransferedData.toString());
+            	t("Zero is received  " + result);
             }
             else
             {
             	Log.d(TAG, "One is received");
-            	t("One is received" + newTransferedData.toString());
+            	t("One is received  " + result);
+            	
             }
+       
+            
             
             transferedData.add(newTransferedData);
             mTransferedDataList.set(mTransferedDataList.size() - 1, transferedData);
@@ -227,9 +234,15 @@ public class ArduinoCommunicatorActivity extends ListActivity {
         }
     };
     
+    
+    public static String byteArrayToString(byte[] bytes)
+    {
+        return new String(bytes);
+    }
+    
     public void t(String message)
     {
-    	Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
+    	Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
     	toast.show();
     }
 }
