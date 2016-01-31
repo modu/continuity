@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import android.app.ListActivity;
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -28,17 +28,20 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
+//import android.R;
 
-public class ArduinoCommunicatorActivity extends ListActivity {
+public class ArduinoCommunicatorActivity extends Activity {
 
     private static final int ARDUINO_USB_VENDOR_ID = 0x2341;
     private static final int ARDUINO_UNO_USB_PRODUCT_ID = 0x01;
@@ -51,9 +54,16 @@ public class ArduinoCommunicatorActivity extends ListActivity {
     private final static String TAG = "continuity";
     private final static boolean DEBUG = true;
     
+    Uri notification;
+    Ringtone r;
+    
     private Boolean mIsReceiving;
     private ArrayList<ByteArray> mTransferedDataList = new ArrayList<ByteArray>();
     private ArrayAdapter<ByteArray> mDataAdapter;
+    
+    int images[] = {R.drawable.red,R.drawable.white, R.drawable.connected,R.drawable.not_connected};
+    ImageView img;
+
 
     private void findDevice() {
         UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
@@ -129,13 +139,21 @@ public class ArduinoCommunicatorActivity extends ListActivity {
         filter.addAction(ArduinoCommunicatorService.DATA_SENT_INTERNAL_INTENT);
         registerReceiver(mReceiver, filter);
 
-        mDataAdapter = new ArrayAdapter<ByteArray>(this, android.R.layout.simple_list_item_1, mTransferedDataList);
-        setListAdapter(mDataAdapter);
+        //mDataAdapter = new ArrayAdapter<ByteArray>(this, android.R.layout.simple_list_item_1, mTransferedDataList);
+        //setListAdapter(mDataAdapter);
+        //setContentView(R.layout.);
+        this.setContentView(R.layout.continuityresult);
+        //setContentView(R.id.imageView1);
+        img = (ImageView) findViewById(R.id.imageView1);
 
         findDevice();
+        //notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+    	//r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+        
     }
 
-    @Override
+
+/*    @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
@@ -143,9 +161,9 @@ public class ArduinoCommunicatorActivity extends ListActivity {
         ByteArray transferedData = mTransferedDataList.get(position);
         transferedData.toggleCoding();
         mTransferedDataList.set(position, transferedData);
-        mDataAdapter.notifyDataSetChanged();
+        //mDataAdapter.notifyDataSetChanged();
     }
-
+*/
     @Override
     protected void onNewIntent(Intent intent) {
         if (DEBUG) Log.d(TAG, "onNewIntent() " + intent);
@@ -206,19 +224,26 @@ public class ArduinoCommunicatorActivity extends ListActivity {
             {
             	Log.d(TAG, "Zero is received");
             	t("Zero is received  " + result);
+            	//LinearLayout  linearLayout = (LinearLayout) findViewById(R.id.imageView1);
+            	 //linearLayout.setBackgroundResource(R.drawable.red);
+            	//ImageView img= (ImageView) findViewById(R.i);
+            	img.setBackgroundDrawable(getResources().getDrawable(images[3]));
+                //r.play();
+                //img.setImageResource(R.id.);
             }
             else
             {
             	Log.d(TAG, "One is received");
             	t("One is received  " + result);
-            	
-            }
-       
-            
-            
+            	//LinearLayout  linearLayout = (LinearLayout) findViewById(R.id.imageView1);
+           	    //linearLayout.setBackgroundResource(R.drawable.white);
+            	img.setBackgroundDrawable(getResources().getDrawable(images[2]));
+            	//img.setBackgroundColor(2); /*Another try*/
+
+            }     
             transferedData.add(newTransferedData);
             mTransferedDataList.set(mTransferedDataList.size() - 1, transferedData);
-            mDataAdapter.notifyDataSetChanged();
+            //mDataAdapter.notifyDataSetChanged();
         }
 
         @Override
